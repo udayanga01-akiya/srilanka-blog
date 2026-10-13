@@ -1,0 +1,88 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<style>
+    /* Hero Title */
+    .hero { text-align: center; margin-bottom: 30px; }
+    .hero h1 { font-size: 80px; font-weight: 900; letter-spacing: 2px; }
+    .hero h1 span { color: #ef4444; }
+    .hero h1 .blue { color: #3b82f6; }
+    .subtitle { letter-spacing: 4px; font-size: 14px; color: #93c5fd; margin-top: -10px; }
+
+    /* Category Buttons */
+    .categories { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+    .cat-btn {
+        padding: 8px 24px; border-radius: 20px; text-decoration: none; color: #fff;
+        border: 1px solid #475569; background: rgba(30, 41, 59, 0.6); font-size: 14px;
+    }
+    .cat-btn.active { background: #2563eb; border-color: #2563eb; }
+
+    /* Search Bar */
+    .search-box {
+        display: flex; max-width: 600px; margin: 0 auto 50px auto;
+    }
+    .search-box input {
+        flex: 1; padding: 12px 20px; border-radius: 8px 0 0 8px; border: 1px solid #334155;
+        background: rgba(15, 23, 42, 0.8); color: #fff; outline: none;
+    }
+    .search-box button {
+        padding: 12px 24px; border-radius: 0 8px 8px 0; border: none;
+        background: #2563eb; color: #fff; cursor: pointer; font-weight: bold;
+    }
+
+    /* Post Grid */
+    .post-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 25px;
+    }
+    .card {
+        background: rgba(15, 23, 42, 0.85); border-radius: 12px; overflow: hidden;
+        border: 1px solid #1e293b; transition: transform 0.2s; text-decoration: none; color: inherit;
+        display: block; position: relative;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card-img { width: 100%; height: 220px; object-fit: cover; }
+    .card-badge {
+        position: absolute; top: 15px; right: 15px; background: #2563eb;
+        padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold;
+    }
+    .card-body { padding: 20px; }
+    .card-title { font-size: 20px; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+    .card-date { font-size: 12px; color: #64748b; margin-top: 10px; }
+</style>
+
+<div class="hero">
+    <h1><span>S</span>RI <span class="blue">LANKA</span></h1>
+    <div class="subtitle">AKHILA HENNEDIGE</div>
+</div>
+
+<div class="categories">
+    <a href="?category=All" class="cat-btn {% if current_category == 'All' %}active{% endif %}">All Posts</a>
+    <a href="?category=Travel" class="cat-btn {% if current_category == 'Travel' %}active{% endif %}">Travel</a>
+    <a href="?category=Culture" class="cat-btn {% if current_category == 'Culture' %}active{% endif %}">Culture</a>
+    <a href="?category=Food" class="cat-btn {% if current_category == 'Food' %}active{% endif %}">Food</a>
+</div>
+
+<form class="search-box" method="GET" action="">
+    <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}">
+    <button type="submit">🔍 Search</button>
+</form>
+
+<div class="post-grid">
+    {% for post in posts %}
+        <a href="{% url 'post_detail' post.pk %}" class="card">
+            <span class="card-badge">{{ post.category }}</span>
+            {% if post.image %}
+                <img src="{{ post.image.url }}" class="card-img" alt="{{ post.title }}">
+            {% else %}
+                <img src="https://via.placeholder.com/400x220" class="card-img" alt="placeholder">
+            {% endif %}
+            <div class="card-body">
+                <div class="card-title">{{ post.title }}</div>
+                <div class="card-date">{{ post.created_at|date:"M d, Y" }}</div>
+            </div>
+        </a>
+    {% empty %}
+        <p style="text-align: center; grid-column: 1/-1; color: #94a3b8;">No posts found.</p>
+    {% endfor %}
+</div>
+{% endblock %}
