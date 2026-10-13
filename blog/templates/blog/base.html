@@ -5,51 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DjangoBlog</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
-                        url('https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=1920') no-repeat center center fixed;
-            background-size: cover;
-            min-height: 100vh;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
+        body {
+         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+         color: #ffffff;
+        /* 黒のグラデーションオーバーレイで文字を読みやすくし、背景位置を中心に配置 */
+        background: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), 
+                url('https://cdn.worldghoomo.com/wp-content/uploads/2019/04/Sri-Lanka-Travel-Guide.jpg') no-repeat center center fixed;
+        
+         background-size: 100% auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
 
+        
+    }
+        
         /* Navbar */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 80px;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
+            padding: 15px 40px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .logo { font-size: 24px; font-weight: bold; color: #818cf8; text-decoration: none; }
-        .nav-links a { color: #94a3b8; margin-left: 20px; text-decoration: none; }
-        .nav-buttons .btn {
-            padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 14px; margin-left: 10px;
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #818cf8;
+            text-decoration: none;
         }
-        .btn-outline { border: 1px solid #475569; color: #fff; }
-        .btn-danger { background: #ef4444; color: #fff; }
+        .nav-links a {
+            color: #e2e8f0;
+            margin-left: 20px;
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: #38bdf8;
+        }
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-outline {
+            border: 1px solid #818cf8;
+            color: #fff;
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
 
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
     </style>
 </head>
 <body>
+
     <nav>
         <div style="display: flex; align-items: center; gap: 40px;">
-            <a href="/" class="logo">DjangoBlog</a>
+            <a href="{% url 'post_list' %}" class="logo">DjangoBlog</a>
             <div class="nav-links">
-                <a href="/">Home</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
+                <a href="{% url 'post_list' %}">Home</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'contact' %}">Contact</a>
             </div>
         </div>
+
         <div class="nav-buttons">
             {% if user.is_authenticated %}
-                <a href="#" class="btn btn-outline">New Post</a>
+             <a href="{% url 'post_create' %}" class="btn btn-outline">New Post</a>
                 <span style="font-size: 14px; margin: 0 10px;">Hi, {{ user.username }}!</span>
-                <a href="/admin/logout/" class="btn btn-outline">Logout</a>
+                <a href="/admin/logout/" class="btn btn-danger">Logout</a>
             {% else %}
                 <a href="/admin/login/" class="btn btn-outline">Login</a>
             {% endif %}
@@ -57,7 +99,50 @@
     </nav>
 
     <div class="container">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
+
+    <!-- Footer Section -->
+    <footer style="background: rgba(15, 23, 42, 0.95); border-top: 1px solid rgba(255, 255, 255, 0.1); padding: 40px 20px 20px 20px; margin-top: 60px; color: #cbd5e1;">
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 30px;">
+            <div style="flex: 1; min-width: 250px;">
+                <h3 style="color: #818cf8; font-size: 20px; margin-bottom: 12px;">Sri Lanka Blog</h3>
+                <p style="font-size: 14px; line-height: 1.6; color: #94a3b8;">
+                    Discover the beauty, rich culture, delicious cuisine, and breathtaking travel destinations of Sri Lanka.
+                </p>
+            </div>
+            <div style="flex: 1; min-width: 180px;">
+                <h4 style="color: #fff; font-size: 16px; margin-bottom: 12px;">Quick Links</h4>
+                <ul style="list-style: none; padding: 0; font-size: 14px; line-height: 2;">
+                    <li><a href="{% url 'post_list' %}" style="color: #94a3b8; text-decoration: none;">Home</a></li>
+                    <li><a href="{% url 'about' %}" style="color: #94a3b8; text-decoration: none;">About Us</a></li>
+                    <li><a href="{% url 'contact' %}" style="color: #94a3b8; text-decoration: none;">Contact</a></li>
+                </ul>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+                <h4 style="color: #fff; font-size: 16px; margin-bottom: 12px;">Connect With Us</h4>
+                <div style="display: flex; gap: 15px; font-size: 20px;">
+                    <a href="#" style="color: #38bdf8; text-decoration: none;">🌐</a>
+                    <a href="#" style="color: #38bdf8; text-decoration: none;">📘</a>
+                    <a href="#" style="color: #38bdf8; text-decoration: none;">📸</a>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 13px; color: #64748b;">
+            © {% now "Y" %} Sri Lanka Blog by Akhila Hennedige. All Rights Reserved.
+        </div>
+    </footer>
+    <!-- Flash Messages -->
+    {% if messages %}
+      <div style="max-width: 1200px; margin: 20px auto 0 auto; padding: 0 20px;">
+        {% for message in messages %}
+          <div style="padding: 12px 20px; border-radius: 8px; background: #22c55e; color: #fff; font-weight: bold; margin-bottom: 10px;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
 </body>
 </html>

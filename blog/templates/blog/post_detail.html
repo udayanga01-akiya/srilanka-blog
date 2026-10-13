@@ -2,98 +2,186 @@
 
 {% block content %}
 <style>
-    .detail-card {
-        max-width: 800px;
-        margin: 0 auto;
-        background: rgba(15, 23, 42, 0.9);
-        border-radius: 12px;
-        padding: 40px;
-        border: 1px solid #1e293b;
+    .post-detail-container {
+        max-width: 850px;
+        margin: 20px auto 40px auto;
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        padding: 35px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        color: #e2e8f0;
     }
-    .detail-title {
+    .post-title {
         font-size: 32px;
-        font-weight: bold;
-        text-transform: uppercase;
-        margin-bottom: 10px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 12px;
+        line-height: 1.3;
     }
-    .detail-meta {
-        font-size: 14px;
+    .post-meta {
+        font-size: 13px;
         color: #94a3b8;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .post-badge {
+        background: #2563eb;
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-transform: lowercase;
+        margin-right: 8px;
+    }
+    .post-cover-img {
+        width: 100%;
+        max-height: 450px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .post-body {
+        font-size: 16px;
+        line-height: 1.8;
+        color: #cbd5e1;
+        margin-bottom: 35px;
+    }
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    .like-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 8px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+    .like-btn.liked {
+        background: #ef4444;
+        border-color: #ef4444;
+    }
+    .like-btn:hover {
+        transform: scale(1.05);
+    }
+    .share-btns {
         display: flex;
         gap: 10px;
         align-items: center;
     }
-    .badge {
-        background: #2563eb;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        color: #fff;
-    }
-    .detail-img {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 8px;
-        margin-bottom: 25px;
-    }
-    .detail-content {
-        line-height: 1.8;
-        color: #cbd5e1;
-        font-size: 16px;
-        margin-bottom: 30px;
-    }
-    .actions {
-        display: flex;
-        gap: 15px;
-    }
-    .btn-warning {
-        background: #f59e0b;
-        color: #fff;
-        padding: 8px 16px;
+    .share-btn {
+        padding: 6px 14px;
         border-radius: 6px;
         text-decoration: none;
-    }
-    .btn-danger {
-        background: #ef4444;
         color: #fff;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
     }
-    .btn-back {
-        background: #334155;
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 6px;
-        text-decoration: none;
-        margin-left: auto;
+    .comment-card {
+        background: rgba(30, 41, 59, 0.5);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 </style>
 
-<div class="detail-card">
-    <div class="detail-title">{{ post.title }}</div>
-    <div class="detail-meta">
-        <span class="badge">{{ post.category }}</span>
-        <span>By <strong>{{ post.author.username }}</strong></span> • 
-        <span>{{ post.created_at|date:"M d, Y" }}</span>
+<div class="post-detail-container">
+    
+    <!-- Title & Meta -->
+    <h1 class="post-title">{{ post.title }}</h1>
+    <div class="post-meta">
+        <span class="post-badge">{{ post.category }}</span>
+        <span>• {{ post.created_at|date:"M d, Y" }}</span>
+        {% if post.author %}
+            <span> • By {{ post.author.username }}</span>
+        {% endif %}
     </div>
 
+    <!-- Main Image -->
     {% if post.image %}
-        <img src="{{ post.image.url }}" class="detail-img" alt="{{ post.title }}">
+        <img src="{{ post.image.url }}" class="post-cover-img" alt="{{ post.title }}">
     {% endif %}
 
-    <div class="detail-content">
+    <!-- Content -->
+    <div class="post-body">
         {{ post.content|linebreaks }}
     </div>
 
-    <div class="actions">
-        {% if user == post.author or user.is_superuser %}
-            <a href="/admin/blog/post/{{ post.pk }}/change/" class="btn-warning">Edit Post</a>
-            <a href="/admin/blog/post/{{ post.pk }}/delete/" class="btn-danger">Delete Post</a>
-        {% endif %}
-        <a href="/" class="btn-back">Back to Home</a>
+    <!-- Like & Social Share Bar -->
+    <div class="action-bar">
+        <form action="{% url 'like_post' post.pk %}" method="POST" style="margin: 0;">
+            {% csrf_token %}
+            <button type="submit" class="like-btn {% if liked %}liked{% endif %}">
+                ❤️ {{ total_likes }} Likes
+            </button>
+        </form>
+
+        <div class="share-btns">
+            <span style="font-size: 14px; color: #94a3b8;">Share:</span>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-btn" style="background: #1877f2;">Facebook</a>
+            <a href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}" target="_blank" class="share-btn" style="background: #25d366;">WhatsApp</a>
+        </div>
     </div>
+
+    <!-- Comments Section -->
+    <div style="margin-bottom: 40px;">
+        <h3 style="color: #38bdf8; margin-bottom: 20px; font-size: 20px;">💬 Comments ({{ comments.count }})</h3>
+        
+        <!-- Add Comment Form -->
+        <form method="POST" style="margin-bottom: 30px; background: rgba(30, 41, 59, 0.7); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 10px 15px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; outline: none;">
+            <textarea name="body" rows="3" placeholder="Write a comment..." required style="width: 100%; padding: 10px 15px; margin-bottom: 12px; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; outline: none;"></textarea>
+            <button type="submit" style="background: #2563eb; color: #fff; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-weight: bold;">Post Comment</button>
+        </form>
+
+        <!-- Display Comments -->
+        {% for comment in comments %}
+            <div class="comment-card">
+                <div style="font-weight: bold; color: #818cf8; font-size: 14px;">
+                    {{ comment.name }} 
+                    <span style="font-size: 11px; color: #64748b; font-weight: normal; margin-left: 8px;">{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                </div>
+                <div style="font-size: 14px; margin-top: 6px; color: #cbd5e1;">{{ comment.body }}</div>
+            </div>
+        {% empty %}
+            <p style="color: #64748b; font-size: 14px;">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Related Posts Section -->
+    {% if related_posts %}
+        <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px;">
+            <h3 style="color: #38bdf8; margin-bottom: 15px; font-size: 18px;">📌 Related Posts</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+                {% for r_post in related_posts %}
+                    <a href="{% url 'post_detail' r_post.pk %}" style="background: rgba(30, 41, 59, 0.6); border-radius: 10px; padding: 12px 16px; text-decoration: none; color: #fff; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s;">
+                        <div style="font-weight: bold; font-size: 14px; margin-bottom: 4px; color: #f8fafc;">{{ r_post.title }}</div>
+                        <div style="font-size: 11px; color: #94a3b8;">{{ r_post.created_at|date:"M d, Y" }}</div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{% url 'post_list' %}" style="color: #94a3b8; text-decoration: none; font-size: 14px;">← Back to Home</a>
+    </div>
+
 </div>
 {% endblock %}
