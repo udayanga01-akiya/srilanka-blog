@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-white text-center mb-4">Explore Districts</h2>
+    <div class="row">
+        {% for district in districts %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white border-0 shadow">
+                {% if district.image %}
+                    <img src="{{ district.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ district.name }}</h5>
+                    <a href="{% url 'district_detail' district.slug %}" class="btn btn-primary mt-2">Explore {{ district.name }}</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

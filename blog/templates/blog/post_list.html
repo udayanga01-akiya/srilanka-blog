@@ -1,264 +1,145 @@
-{% extends 'blog/base.html' %}
+{% extends "blog/base.html" %}
 
 {% block content %}
-<style>
-    /* Hero Section */
-    .hero {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-    .hero-title {
-        font-size: 64px;
-        font-weight: 900;
-        letter-spacing: 2px;
-    }
-    .hero-title span {
-        color: #ef4444;
-    }
-    .hero-subtitle {
-        font-size: 14px;
-        letter-spacing: 3px;
-        color: #3b82f6;
-        font-weight: bold;
-        margin-top: -10px;
-        margin-bottom: 30px;
-    }
-
-    /* Category Filter */
-    .categories {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        margin-bottom: 25px;
-    }
-    .cat-btn {
-        padding: 8px 20px;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background: rgba(15, 23, 42, 0.6);
-        color: #fff;
-        text-decoration: none;
-        font-size: 14px;
-        transition: 0.3s;
-    }
-    .cat-btn.active, .cat-btn:hover {
-        background: #2563eb;
-        border-color: #2563eb;
-    }
-
-    /* Search Box */
-    .search-box {
-        max-width: 600px;
-        margin: 0 auto 25px auto;
-        display: flex;
-        background: rgba(15, 23, 42, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 5px;
-    }
-    .search-input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        padding: 10px 20px;
-        color: #fff;
-        font-size: 15px;
-        outline: none;
-    }
-    .search-btn {
-        background: #2563eb;
-        color: #fff;
-        border: none;
-        padding: 10px 25px;
-        border-radius: 20px;
-        cursor: pointer;
-        font-weight: bold;
-    }
-
-    /* Weather Widget */
-    .weather-card {
-        max-width: 650px;
-        margin: 0 auto 20px auto;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 16px;
-        padding: 12px 20px;
-        text-align: center;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    .weather-title {
-        font-size: 13px;
-        color: #38bdf8;
-        font-weight: bold;
-        margin-bottom: 6px;
-        letter-spacing: 1px;
-    }
-    .weather-items {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        font-size: 14px;
-    }
-
-    /* Compact Map Card */
-    .map-card {
-        max-width: 650px;
-        margin: 0 auto 40px auto;
-        background: rgba(15, 23, 42, 0.85);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 16px;
-        padding: 15px 20px 20px 20px;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    }
-    .map-header {
-        text-align: center;
-        margin-bottom: 12px;
-    }
-    .map-header h3 {
-        font-size: 16px;
-        color: #38bdf8;
-        letter-spacing: 1px;
-        margin: 0;
-    }
-    .map-container {
-        width: 100%;
-        height: 220px;
-        border-radius: 10px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    /* Post Grid - 1行に3つ綺麗に並ぶデザイン（横並び修復） */
-    .post-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-        width: 100%;
-    }
-    @media (max-width: 992px) {
-        .post-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-    @media (max-width: 600px) {
-        .post-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .card {
-        background: rgba(15, 23, 42, 0.85);
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        text-decoration: none;
-        color: #fff;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-    }
-    .card-img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-    }
-    .card-badge {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: #2563eb;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        font-weight: bold;
-        text-transform: lowercase;
-    }
-    .card-body {
-        padding: 20px;
-    }
-    .card-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-    }
-    .card-date {
-        font-size: 12px;
-        color: #94a3b8;
-    }
-</style>
-
-<div class="hero">
-    <div class="hero-title"><span>S</span>RI LANKA</div>
-    <div class="hero-subtitle">AKHILA HENNEDIGE</div>
-</div>
-
-<div class="categories">
-    <a href="/" class="cat-btn {% if not current_category %}active{% endif %}">All Posts</a>
-    <a href="/?category=Travel" class="cat-btn {% if current_category == 'Travel' %}active{% endif %}">Travel</a>
-    <a href="/?category=Culture" class="cat-btn {% if current_category == 'Culture' %}active{% endif %}">Culture</a>
-    <a href="/?category=Food" class="cat-btn {% if current_category == 'Food' %}active{% endif %}">Food</a>
-</div>
-
-<form class="search-box" method="GET" action="/">
-    <input type="text" name="q" class="search-input" placeholder="Search posts..." value="{{ request.GET.q }}">
-    <button type="submit" class="search-btn">🔍 Search</button>
-</form>
-
-<!-- Weather Widget -->
-<div class="weather-card">
-    <div class="weather-title">☀️ SRI LANKA WEATHER</div>
-    <div class="weather-items">
-        <div>📍 Colombo: <span style="color: #fbbf24; font-weight: bold;">30°C ☀️</span></div>
-        <div>📍 Kandy: <span style="color: #fbbf24; font-weight: bold;">26°C ⛅</span></div>
-        <div>📍 Galle: <span style="color: #fbbf24; font-weight: bold;">29°C 🏖️</span></div>
-    </div>
-</div>
-
-<!-- Compact Map Card -->
-<div class="map-card">
-    <div class="map-header">
-        <h3>📍 Explore Sri Lanka Locations</h3>
-    </div>
-    <div class="map-container">
-        <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2023533.2424873133!2d79.6101186782255!3d7.873053912185794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13860879735252b!2sSri%20Lanka!5e0!3m2!1sen!2slk!4v1700000000000!5m2!1sen!2slk" 
-            width="100%" 
-            height="100%" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-    </div>
-</div>
-
-<!-- 3コラム並びの Post Grid -->
-<div class="post-grid">
-    {% for post in posts %}
-        <a href="{% url 'post_detail' post.pk %}" class="card">
-            <span class="card-badge">{{ post.category }}</span>
-            {% if post.image %}
-                <img src="{{ post.image.url }}" class="card-img" alt="{{ post.title }}">
-            {% else %}
-                <img src="https://via.placeholder.com/400x200" class="card-img" alt="placeholder">
-            {% endif %}
-            <div class="card-body">
-                <div class="card-title">{{ post.title }}</div>
-                <div class="card-date">{{ post.created_at|date:"M d, Y" }}</div>
+<!-- Hero Banner Section -->
+<div class="hero-banner py-5" style="margin-bottom: 0;">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            
+            <!-- වම් පස: Title සහ Search Bar -->
+            <div class="col-lg-8 text-center text-lg-start">
+                <h1 class="hero-title mb-1">SRI LANKA</h1>
+                <p class="hero-subtitle mb-4">DISCOVER THE PEARL OF THE INDIAN OCEAN</p>
+                
+                <!-- Search Bar -->
+                <form method="GET" action="{% url 'post_list' %}" class="me-auto mb-3" style="max-width: 500px;">
+                    <div class="input-group shadow-lg">
+                        <input type="text" name="q" class="form-control bg-dark bg-opacity-70 text-white border-secondary px-4 py-2 rounded-start-pill" placeholder="ස්ථාන, සංචාරක සටහන් සොයන්න..." value="{{ request.GET.q }}">
+                        <button type="submit" class="btn btn-primary px-4 rounded-end-pill"><i class="fas fa-search"></i></button>
+                    </div>
+                </form>
             </div>
-        </a>
-    {% empty %}
-        <p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">No posts found.</p>
-    {% endfor %}
+
+            <!-- දකුණු පස: Map සහ Weather එකට එකතු කළ Widget එක -->
+            <div class="col-lg-4 text-start">
+                <div class="glass-card p-3 shadow-lg">
+                    <!-- Map Widget -->
+                    <div class="mb-3">
+                        <h6 class="fw-bold mb-2 text-light small"><i class="fas fa-map-marked-alt me-2 text-primary"></i>Sri Lanka Map</h6>
+                        <div class="rounded-3 overflow-hidden border border-white border-opacity-10">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1980386.4137258327!2d79.85000000000001!3d7.873054!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593c1f65u1b1%3A0x833a02593c1f65u1!2sSri%20Lanka!5e0!3m2!1sen!2slk!4v1630000000000!5m2!1sen!2slk" width="100%" height="110" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Weather Widget -->
+                    <div>
+                        <h6 class="fw-bold mb-2 text-light small"><i class="fas fa-cloud-sun me-2 text-info"></i>Weather Updates</h6>
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded bg-white bg-opacity-10 mb-1 border border-white border-opacity-10">
+                            <span class="fw-semibold text-light small">Kandy</span>
+                            <span class="badge bg-warning text-dark px-2 py-1 small rounded-pill">28°C</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center p-2 rounded bg-white bg-opacity-10 border border-white border-opacity-10">
+                            <span class="fw-semibold text-light small">Galle</span>
+                            <span class="badge bg-info text-dark px-2 py-1 small rounded-pill">30°C</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Districts Grid Section (Background Image එකට පහළින්) -->
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-light m-0"><i class="fas fa-th-large text-primary me-2"></i>Explore By province</h4>
+        {% if selected_district %}
+            <a href="{% url 'post_list' %}" class="btn btn-sm btn-outline-info rounded-pill px-3"><i class="fas fa-sync-alt me-1"></i>See the all</a>
+        {% endif %}
+    </div>
+
+    <!-- District Visual Photo Cards -->
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3 mb-5">
+        <!-- All Districts Button -->
+        <div class="col">
+            <a href="{% url 'post_list' %}" class="text-decoration-none">
+                <div class="card glass-card text-center p-3 h-100 border-0 {% if not selected_district %}border border-info border-2{% endif %}">
+                    <div class="my-auto">
+                        <i class="fas fa-globe-asia fs-2 text-info mb-2"></i>
+                        <h6 class="text-light fw-bold m-0">All province</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {% for district in districts %}
+        <div class="col">
+            <a href="?district={{ district.id }}" class="text-decoration-none">
+                <div class="card blog-card text-white h-100 border-0 overflow-hidden position-relative shadow-sm {% if selected_district.id == district.id %}border border-info border-2{% endif %}" style="height: 100px !important;">
+                    {% if district.image %}
+                        <img src="{{ district.image.url }}" class="card-img w-100 h-100" style="object-fit: cover; filter: brightness(0.6);" alt="{{ district.name }}">
+                    {% else %}
+                        <!-- Default Sri Lanka Landscape Photo -->
+                        <img src="https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=400&auto=format&fit=crop" class="card-img w-100 h-100" style="object-fit: cover; filter: brightness(0.5);" alt="{{ district.name }}">
+                    {% endif %}
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center p-2 text-center">
+                        <h6 class="card-title fw-bold text-uppercase m-0 text-white" style="text-shadow: 0 2px 8px rgba(0,0,0,0.9);"><i class="fas fa-map-marker-alt me-1 text-info"></i>{{ district.name }}</h6>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Latest Travel Stories Grid -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-3 border-top border-white border-opacity-10">
+        <h3 class="fw-bold text-light m-0">
+            <i class="fas fa-compass text-info me-2"></i>
+            {% if selected_district %}
+                Places to visit in <span class="text-info">{{ selected_district.name }}</span>
+            {% else %}
+                Latest Travel Stories
+            {% endif %}
+        </h3>
+    </div>
+
+    <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-4">
+            <div class="card blog-card h-100 border-0 shadow">
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="blog-card-img">
+                {% endif %}
+                <div class="card-body d-flex flex-column text-light p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="card-title fw-bold text-uppercase m-0 text-info">{{ post.title }}</h5>
+                        {% if post.district %}
+                            <span class="badge bg-primary bg-opacity-70 rounded-pill"><i class="fas fa-map-pin me-1"></i>{{ post.district.name }}</span>
+                        {% endif %}
+                    </div>
+                    <p class="card-text text-secondary small mb-4">{{ post.content|truncatewords:15 }}</p>
+                    <div class="mt-auto pt-3 border-top border-white border-opacity-10 d-flex justify-content-between text-secondary small">
+                        <span><i class="fas fa-user me-1 text-primary"></i> {{ post.author }}</span>
+                        <span><i class="fas fa-calendar-alt me-1 text-primary"></i> {{ post.created_at|date:"M d, Y" }}</span>
+                    </div>
+                    <a href="{% url 'post_detail' post.pk %}" class="stretched-link"></a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-5 glass-card">
+            <i class="fas fa-search-location fs-1 mb-3 text-secondary"></i>
+            <h5>
+                {% if selected_district %}
+                    තවම {{ selected_district.name }} දිස්ත්‍රික්කයට අදාළ Travel Stories එකතු කර නොමැත.
+                {% else %}
+                    No travel stories found.
+                {% endif %}
+            </h5>
+            <a href="{% url 'post_list' %}" class="btn btn-sm btn-primary rounded-pill mt-3 px-4">Show All Stories</a>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

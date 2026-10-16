@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center text-white mb-5">
+        <h1>Welcome to {{ district.name }}</h1>
+    </div>
+
+    <h3 class="text-white mb-4">Best Places to Visit in {{ district.name }}</h3>
+    <div class="row">
+        {% for place in places %}
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark text-white border-0 shadow">
+                {% if place.image %}
+                    <img src="{{ place.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ place.title }}</h5>
+                    <p class="card-text text-muted">{{ place.content|truncatewords:15 }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-white">තවම මේ ප්‍රදේශය සඳහා ස්ථාන ඇතුළත් කර නොමැත.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
